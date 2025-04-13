@@ -209,29 +209,15 @@ namespace Course
                 string currencySymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
                 quantity_net_total_label.Text = $"{currencySymbol}{_total}";
             }
-            ModifyDate();
-            ModifyHour();
             FillProducts();
             CleanFields();
         }
 
-        private void ModifyDate()
-        {
-            lblFecha.Text = DateTime.Now.ToShortDateString();
-        }
-
-        private void ModifyHour()
-        {
-            lblHora.Text = DateTime.Now.ToLongTimeString();
-        }
-
         private void CleanFields()
         {
-            client_textbox.Clear();
             product_combo_box.Text = "Seleccione un producto";
             lblPrecio.Text = "0.00";
             quantity_text_box.Clear();
-            client_textbox.Focus();
         }
 
         private void FillProducts()
