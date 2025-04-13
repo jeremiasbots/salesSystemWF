@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OfficeOpenXml;
 
 namespace Course
 {
@@ -16,6 +17,7 @@ namespace Course
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            ExcelPackage.License.SetNonCommercialPersonal("jeremiasbots");
             Application.Run(new Form1());
         }
     }
