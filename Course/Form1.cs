@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using OfficeOpenXml;
 
@@ -19,19 +13,16 @@ namespace Course
         private ExcelPackage _package;
         private ExcelWorksheet _worksheet;
 
-        string fileRoute = Path.Combine(
+        private string fileRoute = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "Ventas.xlsx"
         );
 
-        ExcelPackage package = new ExcelPackage();
+        private static string[] products = {"Teclado", "Celular", "Reloj", "Cuatro"};
 
+        private Ventas ventas = new Ventas();
 
-        static string[] products = {"Teclado", "Celular", "Reloj", "Cuatro"};
-
-        Ventas ventas = new Ventas();
-
-        double total;
+        private double _total;
 
         public Form1()
         {
@@ -59,8 +50,27 @@ namespace Course
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+            if (IsFileBlocked(fileRoute))
+            {
+                MessageBox.Show("El archivo está en uso por otro programa (como Excel). Ciérralo antes de continuar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            string selectedProduct = product_combo_box.Text;
+            if (!products.Contains(selectedProduct))
+            {
+                MessageBox.Show("Tienes que seleccionar un producto válido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             ventas.Product = product_combo_box.Text;
-            ventas.Quantity = int.Parse(quantity_text_box.Text);
+            try
+            {
+                ventas.Quantity = int.Parse(quantity_text_box.Text);
+            } 
+            catch
+            {
+                MessageBox.Show("Tienes que poner una cantidad válida", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             ListViewItem row = new ListViewItem(ventas.Product);
             row.SubItems.Add(ventas.Quantity.ToString());
@@ -69,8 +79,8 @@ namespace Course
             row.SubItems.Add(ventas.CalculateDiscount().ToString("C"));
             row.SubItems.Add(ventas.CalculateNet().ToString("C"));
             register_listbox.Items.Add(row);
-            total += ventas.CalculateNet();
-            quantity_net_total_label.Text = total.ToString("C");
+            _total += ventas.CalculateNet();
+            quantity_net_total_label.Text = _total.ToString("C");
             AddItem(ventas.Product, ventas.Quantity, ventas.AssignPrice(), ventas.CalculateSubtotal(), ventas.CalculateDiscount(), ventas.CalculateNet());
 
             CleanFields();
@@ -119,6 +129,44 @@ namespace Course
 
         }
 
+        private static decimal ParseCurrencyString(string value)
+        {
+            value = value.Trim();
+
+            // 1. Intenta detectar el símbolo de moneda de cualquier cultura
+            foreach (CultureInfo culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
+            {
+                string symbol = culture.NumberFormat.CurrencySymbol;
+                if (value.Contains(symbol))
+                {
+                    try
+                    {
+                        decimal result = decimal.Parse(value, NumberStyles.Currency, culture);
+                        return result;
+                    }
+                    catch (FormatException)
+                    {
+                        // Continuar si falla con esta cultura
+                    }
+                }
+            }
+
+            // 2. Limpia caracteres no numéricos (excepto dígitos, puntos, comas y signos)
+            string cleanValue = Regex.Replace(value, @"[^\d.,-]", "");
+
+            // 3. Intenta parsear con culturas comunes
+            if (decimal.TryParse(cleanValue, NumberStyles.Any, new CultureInfo("es-ES"), out decimal resultEs))
+            {
+                return resultEs; // Ej: "190,00" → 190.00
+            }
+            else if (decimal.TryParse(cleanValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal resultInv))
+            {
+                return resultInv; // Ej: "190.00" → 190.00
+            }
+
+            throw new FormatException($"No se pudo parsear el valor: {value}");
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             register_listbox.Items.Clear();
@@ -142,20 +190,28 @@ namespace Course
 
                 int rowCount = _worksheet.Dimension.End.Row;
                 int columnCount = _worksheet.Dimension.End.Column;
+                decimal totalExcel = 0;
                 for (int row = 2; row <= rowCount; row++)
                 {
                     ListViewItem item = new ListViewItem(_worksheet.Cells[row, 1].Text);
                     for (int column = 2; column <= columnCount; column++)
                     {
                         item.SubItems.Add(_worksheet.Cells[row, column].Text);
+                        if (column == _worksheet.Dimension.End.Column)
+                        {
+                            string netValue = _worksheet.Cells[row, column].Text;
+                            totalExcel += ParseCurrencyString(netValue);
+                        }
                     }
                     register_listbox.Items.Add(item);
                 }
+                _total += decimal.ToDouble(totalExcel);
+                string currencySymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+                quantity_net_total_label.Text = $"{currencySymbol}{_total}";
             }
             ModifyDate();
             ModifyHour();
             FillProducts();
-            quantity_net_total_label.Text = "0.00";
             CleanFields();
         }
 
@@ -213,6 +269,47 @@ namespace Course
         {
             ventas.Product = product_combo_box.Text;
             lblPrecio.Text = ventas.AssignPrice().ToString("C");
+        }
+
+        private void delete_button_Click(object sender, EventArgs e)
+        {
+            if (register_listbox.SelectedItems.Count > 0)
+            {
+                if (IsFileBlocked(fileRoute))
+                {
+                    MessageBox.Show("El archivo está en uso por otro programa (como Excel). Ciérralo antes de continuar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                foreach (ListViewItem item in register_listbox.SelectedItems)
+                {
+                    _worksheet.DeleteRow(item.Index + 2);
+                    _package.SaveAs(new FileInfo(fileRoute));
+                    register_listbox.Items.Remove(item);
+                    decimal parsedText = ParseCurrencyString(item.SubItems[5].Text);
+                    _total -= decimal.ToDouble(parsedText);
+                    string currencySymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+                    quantity_net_total_label.Text = $"{currencySymbol}{_total}";
+                }
+            }
+            else
+            {
+                MessageBox.Show("Selecciona las filas a eliminar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private bool IsFileBlocked(string path)
+        {
+            try
+            {
+                using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                {
+                    return false;
+                }
+            }
+            catch (IOException)
+            {
+                return true;
+            }
         }
     }
 }

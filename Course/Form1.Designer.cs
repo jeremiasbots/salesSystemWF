@@ -29,19 +29,22 @@
         private void InitializeComponent()
         {
             this.data_groupbox = new System.Windows.Forms.GroupBox();
-            this.client_label = new System.Windows.Forms.Label();
             this.client_textbox = new System.Windows.Forms.TextBox();
+            this.client_label = new System.Windows.Forms.Label();
             this.date_label = new System.Windows.Forms.Label();
             this.time_label = new System.Windows.Forms.Label();
             this.venta_data = new System.Windows.Forms.GroupBox();
-            this.product_label = new System.Windows.Forms.Label();
-            this.product_combo_box = new System.Windows.Forms.ComboBox();
-            this.price_label = new System.Windows.Forms.Label();
+            this.delete_button = new System.Windows.Forms.Button();
+            this.quantity_text_box = new System.Windows.Forms.TextBox();
+            this.quantity_venta_label = new System.Windows.Forms.Label();
+            this.registerButton = new System.Windows.Forms.Button();
+            this.cancelar_button = new System.Windows.Forms.Button();
             this.lblPrecio = new System.Windows.Forms.Label();
+            this.price_label = new System.Windows.Forms.Label();
+            this.product_combo_box = new System.Windows.Forms.ComboBox();
+            this.product_label = new System.Windows.Forms.Label();
             this.lblFecha = new System.Windows.Forms.Label();
             this.lblHora = new System.Windows.Forms.Label();
-            this.cancelar_button = new System.Windows.Forms.Button();
-            this.registerButton = new System.Windows.Forms.Button();
             this.register_listbox = new System.Windows.Forms.ListView();
             this.productColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.quantityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -51,8 +54,6 @@
             this.netColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.net_total_label = new System.Windows.Forms.Label();
             this.quantity_net_total_label = new System.Windows.Forms.Label();
-            this.quantity_venta_label = new System.Windows.Forms.Label();
-            this.quantity_text_box = new System.Windows.Forms.TextBox();
             this.data_groupbox.SuspendLayout();
             this.venta_data.SuspendLayout();
             this.SuspendLayout();
@@ -69,6 +70,15 @@
             this.data_groupbox.TabStop = false;
             this.data_groupbox.Text = "DATOS DEL CLIENTE";
             // 
+            // client_textbox
+            // 
+            this.client_textbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.client_textbox.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.client_textbox.Location = new System.Drawing.Point(7, 52);
+            this.client_textbox.Name = "client_textbox";
+            this.client_textbox.Size = new System.Drawing.Size(601, 22);
+            this.client_textbox.TabIndex = 1;
+            // 
             // client_label
             // 
             this.client_label.AutoSize = true;
@@ -79,15 +89,6 @@
             this.client_label.TabIndex = 0;
             this.client_label.Text = "CLIENTE";
             this.client_label.Click += new System.EventHandler(this.client_label_Click);
-            // 
-            // client_textbox
-            // 
-            this.client_textbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.client_textbox.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.client_textbox.Location = new System.Drawing.Point(7, 52);
-            this.client_textbox.Name = "client_textbox";
-            this.client_textbox.Size = new System.Drawing.Size(601, 22);
-            this.client_textbox.TabIndex = 1;
             // 
             // date_label
             // 
@@ -112,6 +113,7 @@
             // 
             // venta_data
             // 
+            this.venta_data.Controls.Add(this.delete_button);
             this.venta_data.Controls.Add(this.quantity_text_box);
             this.venta_data.Controls.Add(this.quantity_venta_label);
             this.venta_data.Controls.Add(this.registerButton);
@@ -128,25 +130,71 @@
             this.venta_data.TabStop = false;
             this.venta_data.Text = "DATOS DE LA VENTA";
             // 
-            // product_label
+            // delete_button
             // 
-            this.product_label.AutoSize = true;
-            this.product_label.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.product_label.Location = new System.Drawing.Point(6, 29);
-            this.product_label.Name = "product_label";
-            this.product_label.Size = new System.Drawing.Size(92, 21);
-            this.product_label.TabIndex = 0;
-            this.product_label.Text = "PRODUCTO";
+            this.delete_button.BackColor = System.Drawing.SystemColors.Control;
+            this.delete_button.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.delete_button.Location = new System.Drawing.Point(945, 57);
+            this.delete_button.Name = "delete_button";
+            this.delete_button.Size = new System.Drawing.Size(191, 51);
+            this.delete_button.TabIndex = 7;
+            this.delete_button.Text = "ELIMINAR";
+            this.delete_button.UseVisualStyleBackColor = false;
+            this.delete_button.Click += new System.EventHandler(this.delete_button_Click);
             // 
-            // product_combo_box
+            // quantity_text_box
             // 
-            this.product_combo_box.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.product_combo_box.FormattingEnabled = true;
-            this.product_combo_box.Location = new System.Drawing.Point(6, 57);
-            this.product_combo_box.Name = "product_combo_box";
-            this.product_combo_box.Size = new System.Drawing.Size(414, 33);
-            this.product_combo_box.TabIndex = 1;
-            this.product_combo_box.SelectedIndexChanged += new System.EventHandler(this.product_combo_box_SelectedIndexChanged);
+            this.quantity_text_box.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.quantity_text_box.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.quantity_text_box.Location = new System.Drawing.Point(473, 62);
+            this.quantity_text_box.Name = "quantity_text_box";
+            this.quantity_text_box.Size = new System.Drawing.Size(82, 22);
+            this.quantity_text_box.TabIndex = 2;
+            // 
+            // quantity_venta_label
+            // 
+            this.quantity_venta_label.AutoSize = true;
+            this.quantity_venta_label.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.quantity_venta_label.Location = new System.Drawing.Point(470, 29);
+            this.quantity_venta_label.Name = "quantity_venta_label";
+            this.quantity_venta_label.Size = new System.Drawing.Size(86, 21);
+            this.quantity_venta_label.TabIndex = 6;
+            this.quantity_venta_label.Text = "CANTIDAD";
+            // 
+            // registerButton
+            // 
+            this.registerButton.BackColor = System.Drawing.SystemColors.Control;
+            this.registerButton.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.registerButton.Location = new System.Drawing.Point(723, 89);
+            this.registerButton.Name = "registerButton";
+            this.registerButton.Size = new System.Drawing.Size(191, 51);
+            this.registerButton.TabIndex = 5;
+            this.registerButton.Text = "REGISTRAR";
+            this.registerButton.UseVisualStyleBackColor = false;
+            this.registerButton.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // cancelar_button
+            // 
+            this.cancelar_button.BackColor = System.Drawing.SystemColors.Control;
+            this.cancelar_button.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.cancelar_button.Location = new System.Drawing.Point(723, 23);
+            this.cancelar_button.Name = "cancelar_button";
+            this.cancelar_button.Size = new System.Drawing.Size(191, 51);
+            this.cancelar_button.TabIndex = 4;
+            this.cancelar_button.Text = "CANCELAR";
+            this.cancelar_button.UseVisualStyleBackColor = false;
+            this.cancelar_button.Click += new System.EventHandler(this.cancelar_button_Click);
+            // 
+            // lblPrecio
+            // 
+            this.lblPrecio.AutoSize = true;
+            this.lblPrecio.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblPrecio.Location = new System.Drawing.Point(607, 62);
+            this.lblPrecio.Name = "lblPrecio";
+            this.lblPrecio.Size = new System.Drawing.Size(70, 21);
+            this.lblPrecio.TabIndex = 3;
+            this.lblPrecio.Text = "lblPrecio";
+            this.lblPrecio.Click += new System.EventHandler(this.lblPrecio_Click);
             // 
             // price_label
             // 
@@ -159,16 +207,25 @@
             this.price_label.Text = "PRECIO";
             this.price_label.Click += new System.EventHandler(this.price_label_Click);
             // 
-            // lblPrecio
+            // product_combo_box
             // 
-            this.lblPrecio.AutoSize = true;
-            this.lblPrecio.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.lblPrecio.Location = new System.Drawing.Point(607, 62);
-            this.lblPrecio.Name = "lblPrecio";
-            this.lblPrecio.Size = new System.Drawing.Size(70, 21);
-            this.lblPrecio.TabIndex = 3;
-            this.lblPrecio.Text = "lblPrecio";
-            this.lblPrecio.Click += new System.EventHandler(this.lblPrecio_Click);
+            this.product_combo_box.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.product_combo_box.FormattingEnabled = true;
+            this.product_combo_box.Location = new System.Drawing.Point(6, 57);
+            this.product_combo_box.Name = "product_combo_box";
+            this.product_combo_box.Size = new System.Drawing.Size(414, 33);
+            this.product_combo_box.TabIndex = 1;
+            this.product_combo_box.SelectedIndexChanged += new System.EventHandler(this.product_combo_box_SelectedIndexChanged);
+            // 
+            // product_label
+            // 
+            this.product_label.AutoSize = true;
+            this.product_label.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.product_label.Location = new System.Drawing.Point(6, 29);
+            this.product_label.Name = "product_label";
+            this.product_label.Size = new System.Drawing.Size(92, 21);
+            this.product_label.TabIndex = 0;
+            this.product_label.Text = "PRODUCTO";
             // 
             // lblFecha
             // 
@@ -190,30 +247,6 @@
             this.lblHora.TabIndex = 5;
             this.lblHora.Text = "lblHora";
             // 
-            // cancelar_button
-            // 
-            this.cancelar_button.BackColor = System.Drawing.SystemColors.Control;
-            this.cancelar_button.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.cancelar_button.Location = new System.Drawing.Point(723, 23);
-            this.cancelar_button.Name = "cancelar_button";
-            this.cancelar_button.Size = new System.Drawing.Size(191, 51);
-            this.cancelar_button.TabIndex = 4;
-            this.cancelar_button.Text = "CANCELAR";
-            this.cancelar_button.UseVisualStyleBackColor = false;
-            this.cancelar_button.Click += new System.EventHandler(this.cancelar_button_Click);
-            // 
-            // registerButton
-            // 
-            this.registerButton.BackColor = System.Drawing.SystemColors.Control;
-            this.registerButton.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.registerButton.Location = new System.Drawing.Point(723, 89);
-            this.registerButton.Name = "registerButton";
-            this.registerButton.Size = new System.Drawing.Size(191, 51);
-            this.registerButton.TabIndex = 5;
-            this.registerButton.Text = "REGISTRAR";
-            this.registerButton.UseVisualStyleBackColor = false;
-            this.registerButton.Click += new System.EventHandler(this.button1_Click_1);
-            // 
             // register_listbox
             // 
             this.register_listbox.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -224,6 +257,7 @@
             this.discountColumn,
             this.netColumn});
             this.register_listbox.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.register_listbox.FullRowSelect = true;
             this.register_listbox.HideSelection = false;
             this.register_listbox.Location = new System.Drawing.Point(12, 407);
             this.register_listbox.Name = "register_listbox";
@@ -266,7 +300,7 @@
             // 
             this.net_total_label.AutoSize = true;
             this.net_total_label.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.net_total_label.Location = new System.Drawing.Point(908, 667);
+            this.net_total_label.Location = new System.Drawing.Point(14, 667);
             this.net_total_label.Name = "net_total_label";
             this.net_total_label.Size = new System.Drawing.Size(110, 25);
             this.net_total_label.TabIndex = 7;
@@ -277,30 +311,11 @@
             // 
             this.quantity_net_total_label.AutoSize = true;
             this.quantity_net_total_label.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.quantity_net_total_label.Location = new System.Drawing.Point(1039, 664);
+            this.quantity_net_total_label.Location = new System.Drawing.Point(128, 664);
             this.quantity_net_total_label.Name = "quantity_net_total_label";
-            this.quantity_net_total_label.Size = new System.Drawing.Size(130, 28);
+            this.quantity_net_total_label.Size = new System.Drawing.Size(53, 28);
             this.quantity_net_total_label.TabIndex = 8;
-            this.quantity_net_total_label.Text = "lblTotalNeto";
-            // 
-            // quantity_venta_label
-            // 
-            this.quantity_venta_label.AutoSize = true;
-            this.quantity_venta_label.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.quantity_venta_label.Location = new System.Drawing.Point(470, 29);
-            this.quantity_venta_label.Name = "quantity_venta_label";
-            this.quantity_venta_label.Size = new System.Drawing.Size(86, 21);
-            this.quantity_venta_label.TabIndex = 6;
-            this.quantity_venta_label.Text = "CANTIDAD";
-            // 
-            // quantity_text_box
-            // 
-            this.quantity_text_box.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.quantity_text_box.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.quantity_text_box.Location = new System.Drawing.Point(473, 62);
-            this.quantity_text_box.Name = "quantity_text_box";
-            this.quantity_text_box.Size = new System.Drawing.Size(82, 22);
-            this.quantity_text_box.TabIndex = 2;
+            this.quantity_net_total_label.Text = "0.00";
             // 
             // Form1
             // 
@@ -355,6 +370,7 @@
         private System.Windows.Forms.Label quantity_net_total_label;
         private System.Windows.Forms.Label quantity_venta_label;
         private System.Windows.Forms.TextBox quantity_text_box;
+        private System.Windows.Forms.Button delete_button;
     }
 }
 
