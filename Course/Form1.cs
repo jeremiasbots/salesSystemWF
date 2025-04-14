@@ -29,25 +29,6 @@ namespace Course
             InitializeComponent();
         }
 
-        private void client_label_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click_1(object sender, EventArgs e)
         {
             if (IsFileBlocked(fileRoute))
@@ -69,6 +50,11 @@ namespace Course
             catch
             {
                 MessageBox.Show("Tienes que poner una cantidad válida", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (ventas.Quantity <= 0)
+            {
+                MessageBox.Show("La cantidad tiene que ser mayor a 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -206,8 +192,7 @@ namespace Course
                     register_listbox.Items.Add(item);
                 }
                 _total += decimal.ToDouble(totalExcel);
-                string currencySymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
-                quantity_net_total_label.Text = $"{currencySymbol}{_total}";
+                quantity_net_total_label.Text = _total.ToString("C");
             }
             FillProducts();
             CleanFields();
@@ -216,7 +201,7 @@ namespace Course
         private void CleanFields()
         {
             product_combo_box.Text = "Seleccione un producto";
-            lblPrecio.Text = "0.00";
+            lblPrecio.Text = 0.ToString("C");
             quantity_text_box.Clear();
         }
 
@@ -231,11 +216,6 @@ namespace Course
         private void price_label_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void lblPrecio_Click(object sender, EventArgs e)
-        {
-           
         }
 
         private void cancelar_button_Click(object sender, EventArgs e)
@@ -273,8 +253,7 @@ namespace Course
                     register_listbox.Items.Remove(item);
                     decimal parsedText = ParseCurrencyString(item.SubItems[5].Text);
                     _total -= decimal.ToDouble(parsedText);
-                    string currencySymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
-                    quantity_net_total_label.Text = $"{currencySymbol}{_total}";
+                    quantity_net_total_label.Text = _total.ToString("C");
                 }
             }
             else
@@ -296,6 +275,71 @@ namespace Course
             {
                 return true;
             }
+        }
+
+        private string ReturnPureProductValue(string product, int quantity = 1)
+        {
+            switch (product)
+            {
+                case "Teclado":
+                    return (50 * quantity).ToString("C");
+                case "Celular":
+                    return (700 * quantity).ToString("C");
+                case "Reloj":
+                    return (100 * quantity).ToString("C");
+                case "Cuatro":
+                    return (350 * quantity).ToString("C");
+            }
+            return "";
+        }
+
+        private void quantity_text_box_TextChanged(object sender, EventArgs e)
+        {
+            string product = product_combo_box.Text;
+            if (!products.Contains(product)) return;
+            int quantity = 0;
+            if (quantity_text_box.Text.Trim() == "")
+            {
+                lblPrecio.Text = ReturnPureProductValue(product);
+                return;
+            }
+            try
+            {
+                quantity = int.Parse(quantity_text_box.Text);
+            }
+            catch
+            {
+                return;
+            }
+            if (quantity == 0)
+            {
+                lblPrecio.Text = 0.ToString("C");
+                return;
+            }
+            if (quantity < 0)
+            {
+                lblPrecio.Text = ReturnPureProductValue(product);
+                return;
+            }
+            lblPrecio.Text = ReturnPureProductValue(product, quantity);
+        }
+
+        private void lblPrecio_TextChanged(object sender, EventArgs e)
+        {
+            int maxChars = 9;
+            string currencySymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+            string text = lblPrecio.Text.Substring(CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol.Length);
+            if (text.Length > maxChars)
+                lblPrecio.Text = $"{currencySymbol}{(text.Substring(0, maxChars - 2) + "..")}";
+        }
+
+        private void quantity_net_total_label_TextChanged(object sender, EventArgs e)
+        {
+            int maxChars = 9;
+            string currencySymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+            string text = quantity_net_total_label.Text.Substring(CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol.Length);
+            if (text.Length > maxChars)
+                quantity_net_total_label.Text = $"{currencySymbol}{(text.Substring(0, maxChars - 2) + "..")}";
         }
     }
 }

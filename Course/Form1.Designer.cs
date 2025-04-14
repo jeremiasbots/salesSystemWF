@@ -89,6 +89,7 @@
             this.quantity_text_box.Name = "quantity_text_box";
             this.quantity_text_box.Size = new System.Drawing.Size(82, 22);
             this.quantity_text_box.TabIndex = 2;
+            this.quantity_text_box.TextChanged += new System.EventHandler(this.quantity_text_box_TextChanged);
             // 
             // quantity_venta_label
             // 
@@ -126,14 +127,16 @@
             // 
             // lblPrecio
             // 
+            this.lblPrecio.AutoEllipsis = true;
             this.lblPrecio.AutoSize = true;
             this.lblPrecio.Font = new System.Drawing.Font("Segoe UI", 8F);
-            this.lblPrecio.Location = new System.Drawing.Point(607, 62);
+            this.lblPrecio.Location = new System.Drawing.Point(598, 63);
+            this.lblPrecio.MaximumSize = new System.Drawing.Size(0, 50);
             this.lblPrecio.Name = "lblPrecio";
             this.lblPrecio.Size = new System.Drawing.Size(70, 21);
             this.lblPrecio.TabIndex = 3;
             this.lblPrecio.Text = "lblPrecio";
-            this.lblPrecio.Click += new System.EventHandler(this.lblPrecio_Click);
+            this.lblPrecio.TextChanged += new System.EventHandler(this.lblPrecio_TextChanged);
             // 
             // price_label
             // 
@@ -235,6 +238,7 @@
             this.quantity_net_total_label.Size = new System.Drawing.Size(53, 28);
             this.quantity_net_total_label.TabIndex = 8;
             this.quantity_net_total_label.Text = "0.00";
+            this.quantity_net_total_label.TextChanged += new System.EventHandler(this.quantity_net_total_label_TextChanged);
             // 
             // Form1
             // 
